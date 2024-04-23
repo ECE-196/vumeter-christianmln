@@ -13,7 +13,14 @@ led_pins = [
     board.IO21,
     board.IO26, # type: ignore
     board.IO47,
-    # do the rest...
+    board.IO33, # type: ignore
+    board.IO34, # type: ignore
+    board.IO48,
+    board.IO35,
+    board.IO36,
+    board.IO37,
+    board.IO38,
+    board.IO39,
 ]
 
 leds = [DigitalInOut(pin) for pin in led_pins]
@@ -22,16 +29,18 @@ for led in leds:
     led.direction = Direction.OUTPUT
 
 # main loop
+min_thr = 20000
+count = 2000
+arr = [min_thr + i * count for i in range(len(led_pins))]
 while True:
     volume = microphone.value
 
     print(volume)
 
-    leds[0].value = not leds[0].value
-    leds[1].value = not leds[0].value
+    for i in range(len(led_pins)):
+        if volume > arr[i]:
+            leds[i].value = True
+        else:
+            leds[i].value = False
 
-    sleep(1)
-
-    # instead of blinking,
-    # how can you make the LEDs
-    # turn on like a volume meter?
+    sleep(0.1)
